@@ -10,8 +10,8 @@ namespace Source
         [SerializeField] private Button _cancelButton;
         [SerializeField] private TextMeshProUGUI _textLoadingPercent;
         [SerializeField] private Slider _loadBar;
+        [SerializeField] private float _loadBarSpeed = 10f;
         private float _target;
-        private const float LoadBarSpeed = 10f;
 
         private IEventsService _eventsService;
 
@@ -22,7 +22,7 @@ namespace Source
 
         private void Update()
         {
-            _loadBar.value = Mathf.Lerp(_loadBar.value, _target, LoadBarSpeed * Time.deltaTime);
+            _loadBar.value = Mathf.Lerp(_loadBar.value, _target, _loadBarSpeed * Time.deltaTime);
             _textLoadingPercent.text = $"<color=#00FFFF>Loading...</color> {(_loadBar.value * 100):N0}%";
         }
 
@@ -36,8 +36,8 @@ namespace Source
             base.Initialize();
             _eventsService = ServiceLocator.Instance.GetService<IEventsService>();
 
-            _eventsService.AddListener<ResponseLoadingPercentEvent>(HandlerResponseLoadingPercentEvent, GetHashCode());
             _loadBar.value = 0;
+            _eventsService.AddListener<ResponseLoadingPercentEvent>(HandlerResponseLoadingPercentEvent, GetHashCode());
         }
 
         private void HandlerResponseLoadingPercentEvent(ResponseLoadingPercentEvent e)
