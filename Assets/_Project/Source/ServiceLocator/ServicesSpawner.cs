@@ -1,3 +1,4 @@
+using _Project.Source.InventoryServices;
 using DataService;
 using System;
 using UnityEngine;
@@ -29,6 +30,7 @@ public class ServicesSpawner : MonoBehaviour
         SpawnSoundService();
         SpawnGameDataService();
         SpawnScreenService();
+        SpawnInventoryService();
     }
 
     private void SpawnEventService()
@@ -83,5 +85,14 @@ public class ServicesSpawner : MonoBehaviour
         ServiceLocator.Instance.RegisterService<IScreenService>(screenService);
         screenService.Initialize(_startupScreenName, _loadingScreenRef, _fakeLoadingTime);
         screenService.LoadingSceneAsync(_firstSceneName);
+    }
+
+    private void SpawnInventoryService()
+    {
+        GameObject eventServiceObject = new GameObject(nameof(InventoryService));
+        DontDestroyOnLoad(eventServiceObject);
+
+        InventoryService eventsService = eventServiceObject.AddComponent<InventoryService>();
+        eventsService.Setup();
     }
 }

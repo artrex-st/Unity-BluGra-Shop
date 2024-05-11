@@ -18,7 +18,7 @@ namespace LayerLab.GUIScripts
         private TextMeshProUGUI _textTitle;
         [SerializeField] private List<GameObject> defaultPanels = new ();
         [SerializeField] private List<GameObject> otherPanels = new ();
-        
+
         [SerializeField] private Transform panelTransformDefault;
         [SerializeField] private Transform panelTransformOther;
         [SerializeField] private Button buttonPrev;
@@ -50,10 +50,10 @@ namespace LayerLab.GUIScripts
                 t.gameObject.SetActive(false);
             }
             defaultPanels[_page].SetActive(true);
-            
-            
-            
-            
+
+
+
+
             if (otherPanels.Count > 0)
             {
                 foreach (Transform t in panelTransformOther)
@@ -64,9 +64,9 @@ namespace LayerLab.GUIScripts
                 otherPanels[_page].SetActive(true);
             }
 
-            
-            
-            
+
+
+
             _isReady = true;
             CheckControl();
         }
@@ -105,7 +105,7 @@ namespace LayerLab.GUIScripts
             defaultPanels[_page].SetActive(false);
             if(otherPanels.Count > 0) otherPanels[_page].SetActive(false);
             _page -= 1;
-            
+
             defaultPanels[_page].SetActive(true);
             if(otherPanels.Count > 0) otherPanels[_page].SetActive(true);
 
@@ -120,7 +120,7 @@ namespace LayerLab.GUIScripts
                     _textTitle.text = otherPanels[_page].name;
                 }
             }
-            
+
             CheckControl();
         }
 
@@ -128,11 +128,11 @@ namespace LayerLab.GUIScripts
         public void Click_Next()
         {
             if (_page >= defaultPanels.Count - 1) return;
-            
+
             defaultPanels[_page].SetActive(false);
             if(otherPanels.Count > 0) otherPanels[_page].SetActive(false);
             _page += 1;
-            
+
             defaultPanels[_page].SetActive(true);
             if(otherPanels.Count > 0) otherPanels[_page].SetActive(true);
             CheckControl();
@@ -150,7 +150,7 @@ namespace LayerLab.GUIScripts
         {
             if (!IsOtherMode)
             {
-                _textTitle.text = defaultPanels[_page].name.Replace("_", " ");    
+                _textTitle.text = defaultPanels[_page].name.Replace("_", " ");
             }
             else
             {
@@ -159,17 +159,17 @@ namespace LayerLab.GUIScripts
                     _textTitle.text = otherPanels[_page].name.Replace("_", " ");
                 }
             }
-            
+
             SetArrowActive();
         }
-        
+
         public void Click_Mode()
         {
             IsOtherMode = !IsOtherMode;
             SetMode();
             CheckControl();
         }
-        
+
         void SetMode()
         {
             panelTransformDefault.gameObject.SetActive(IsOtherMode);
