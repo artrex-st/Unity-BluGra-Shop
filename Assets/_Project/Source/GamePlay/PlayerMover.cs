@@ -15,7 +15,7 @@ namespace GamePlay
             _eventsService = ServiceLocator.Instance.GetService<IEventsService>();
             _status = status;
             _rigidBody = rigidBody;
-            _eventsService.AddListener<InputAxisEvent>(HandlerStartInputRotationEvent, GetHashCode());
+            _eventsService.AddListener<InputAxisEvent>(HandlerStartInputAxisEvent, GetHashCode());
         }
 
         public void Dispose()
@@ -33,7 +33,7 @@ namespace GamePlay
             _rigidBody.velocity = _inputDirection * _status.MoveSpeed;
         }
 
-        private void HandlerStartInputRotationEvent(InputAxisEvent e)
+        private void HandlerStartInputAxisEvent(InputAxisEvent e)
         {
             _inputDirection = e.MoveAxis;
             _eventsService.Invoke(new RequestMoveAnimationEvent(e.MoveAxis));
