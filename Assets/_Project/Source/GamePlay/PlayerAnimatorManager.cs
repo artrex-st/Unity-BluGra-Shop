@@ -1,16 +1,7 @@
+using Source.EventServices.GameEvents;
 using UnityEngine;
 
 namespace GamePlay {
-    public readonly struct RequestMoveAnimationEvent : IEvent
-    {
-        public readonly float Speed;
-
-        public RequestMoveAnimationEvent(float speed)
-        {
-            Speed = speed;
-        }
-    }
-
     [RequireComponent(typeof(Animator))]
     public class PlayerAnimatorManager : MonoBehaviour
     {
@@ -19,6 +10,7 @@ namespace GamePlay {
         //private bool _isGameRunning;
 
         private Animator Animator => GetComponent<Animator>();
+        private IEventsService _eventsService;
 
         private void OnEnable()
         {
@@ -32,8 +24,9 @@ namespace GamePlay {
 
         private void Initialize()
         {
-            new ResponseGameStateUpdateEvent().AddListener(HandlerRequestNewGameStateEvent);
-            new RequestMoveAnimationEvent().AddListener(HandlerRequestMoveAnimationEvent);
+            _eventsService = ServiceLocator.Instance.GetService<IEventsService>();
+            _eventsService.AddListener<ResponseGameStateUpdateEvent>(HandlerRequestNewGameStateEvent, GetHashCode());
+            _eventsService.AddListener<RequestMoveAnimationEvent>(HandlerRequestMoveAnimationEvent, GetHashCode());
         }
 
         private void HandlerRequestNewGameStateEvent(ResponseGameStateUpdateEvent e)
@@ -49,8 +42,8 @@ namespace GamePlay {
 
         private void Dispose()
         {
-            new ResponseGameStateUpdateEvent().RemoveListener(HandlerRequestNewGameStateEvent);
-            new RequestMoveAnimationEvent().RemoveListener(HandlerRequestMoveAnimationEvent);
+            _eventsService.RemoveListener<ResponseGameStateUpdateEvent>(GetHashCode());
+            _eventsService.RemoveListener<RequestMoveAnimationEvent>(GetHashCode());
         }
     }
 }

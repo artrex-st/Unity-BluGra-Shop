@@ -2,51 +2,89 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-//TODO: I'm still need to improve this service, "unsubscribe" have a bug and you need to use "Unsubscribe" manually
-//by some "dispose" or whatever function when the owner of event becomes inaccessible
-//In the future i will improve this events to fix the bug and unsubscribe with a Foreach on functions like disable, dispose, destroy etc
-public class EventsService : MonoBehaviour, IEventsService
+
+[Serializable]
+internal struct GameEventListened
 {
-    private readonly Dictionary<Type, List<object>> _eventListeners = new();
+    public int ListenerHashCode;
+    public Action<GameEvent> GameEvent;
 
-    public void Subscribe<T>(Action<T> callback) where T : IEvent
+    public GameEventListened(int listenerHashCode, Action<GameEvent> gameEvent)
     {
-        Type eventType = typeof(T);
+        ListenerHashCode = listenerHashCode;
+        GameEvent = gameEvent;
+    }
+}
 
-        if (!_eventListeners.ContainsKey(eventType))
-        {
-            _eventListeners[eventType] = new List<object>();
-        }
+public class EventsService : BaseService, IEventsService
+{
+    private Dictionary<int, List<GameEventListened>> _eventListeners = new Dictionary<int, List<GameEventListened>>();
 
-        _eventListeners[eventType].Add(callback);
+    public override void Setup()
+    {
+        ServiceLocator.Instance.RegisterService<IEventsService>(this);
     }
 
-    public void Unsubscribe<T>(Action<T> callback) where T : IEvent
+    public void AddListener<T>(Action<T> action, int listenerHashCode) where T : GameEvent
     {
-        Type eventType = typeof(T);
+        int actionTypeHashCode = typeof(T).GetHashCode();
+        Action<GameEvent> castedGameEvent = myEvent => action((T)myEvent);
+        GameEventListened gameEventAndListener = new GameEventListened(listenerHashCode, castedGameEvent);
 
-        if (_eventListeners.TryGetValue(eventType, out List<object> listener))
+        if (_eventListeners.ContainsKey(actionTypeHashCode))
         {
-            listener.Remove(callback);
+            _eventListeners[actionTypeHashCode].Add(gameEventAndListener);
+            return;
         }
+
+        _eventListeners.Add(actionTypeHashCode, new List<GameEventListened>() { gameEventAndListener });
     }
 
-    public void Invoke<T>(T eventData) where T : IEvent
+    public void RemoveListener<T>(int listenerHashCode) where T : GameEvent
     {
-        Type eventType = typeof(T);
-
-        if (_eventListeners.ContainsKey(eventType))
+        int hashCode = typeof(T).GetHashCode();
+        if (_eventListeners.ContainsKey(hashCode))
         {
-            List<object> eventListeners = _eventListeners[eventType].ToList(); //TODO: this is a temporary solution to avoid unsubscribe bug,
-                                                                               //this code don't allow events unsubiscribe more that his self
+            RemoveEvent(hashCode, listenerHashCode);
 
-            foreach (object handler in eventListeners)
+            if (_eventListeners[hashCode].Count < 1)
             {
-                if (handler is Action<T> castedHandler)
-                {
-                    castedHandler.Invoke(eventData);
-                }
+                RemoveEventReferences(hashCode);
+            }
+
+            return;
+        }
+    }
+
+    public void Invoke(GameEvent eventData)
+    {
+        int hashCode = eventData.GetType().GetHashCode();
+
+        if (_eventListeners.ContainsKey(hashCode))
+        {
+            foreach (GameEventListened action in _eventListeners[hashCode])
+            {
+                Debug.Log("Invoked one");
+                action.GameEvent?.Invoke(eventData);
+            }
+            return;
+        }
+    }
+
+    private void RemoveEvent(int eventHash, int listenerHashCode)
+    {
+        foreach (GameEventListened gameEventByHash in _eventListeners[eventHash])
+        {
+            if(gameEventByHash.ListenerHashCode == listenerHashCode)
+            {
+                _eventListeners[eventHash].Remove(gameEventByHash);
+                return;
             }
         }
+    }
+
+    private void RemoveEventReferences(int eventHash)
+    {
+        _eventListeners.Remove(eventHash);
     }
 }

@@ -1,4 +1,4 @@
-using System;
+using Source.EventServices.GameEvents;
 using UnityEngine;
 
 public enum GameStates
@@ -8,33 +8,16 @@ public enum GameStates
     GameWaiting
 }
 
-public struct RequestGameStateUpdateEvent : IEvent
-{
-    public readonly GameStates NewGameState;
-
-    public RequestGameStateUpdateEvent(GameStates newGameState)
-    {
-        NewGameState = newGameState;
-    }
-}
-
-public struct ResponseGameStateUpdateEvent : IEvent
-{
-    public readonly GameStates CurrentGameState;
-
-    public ResponseGameStateUpdateEvent(GameStates currentGameState)
-    {
-        CurrentGameState = currentGameState;
-    }
-}
-
 public class GameDataService : MonoBehaviour, IGameDataService
 {
     public GameStates CurrentGameState { get; private set; } = GameStates.GameWaiting;
 
+    private IEventsService _eventsService;
+
     public void Initialize()
     {
-        new RequestGameStateUpdateEvent().AddListener(HandlerRequestGameStateUpdateEvent);
+        _eventsService = ServiceLocator.Instance.GetService<IEventsService>();
+        _eventsService.AddListener<RequestGameStateUpdateEvent>(HandlerRequestGameStateUpdateEvent, GetHashCode());
     }
 
     public void SetGameState(GameStates newGameState)
@@ -47,11 +30,16 @@ public class GameDataService : MonoBehaviour, IGameDataService
 
         Debug.Log($"<color=Green>Game State changed from: {CurrentGameState} to {newGameState}!</color>");
         CurrentGameState = newGameState;
-        new ResponseGameStateUpdateEvent(CurrentGameState).Invoke();
+        _eventsService.Invoke(new ResponseGameStateUpdateEvent(CurrentGameState));
     }
 
     private void HandlerRequestGameStateUpdateEvent(RequestGameStateUpdateEvent e)
     {
         SetGameState(e.NewGameState);
+    }
+
+    private void OnDestroy()
+    {
+        _eventsService.RemoveListener<RequestGameStateUpdateEvent>(GetHashCode());
     }
 }

@@ -1076,7 +1076,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         private @InputActions m_Wrapper;
         public PlayerActions(@InputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
-        public InputAction @Axis_X => m_Wrapper.m_Player_Axis_X;
+        public InputAction Axis => m_Wrapper.m_Player_Axis_X;
         public InputAction @Axis_Y => m_Wrapper.m_Player_Axis_Y;
         public InputAction @Point => m_Wrapper.m_Player_Point;
         public InputAction @Press => m_Wrapper.m_Player_Press;
@@ -1092,9 +1092,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
-            @Axis_X.started += instance.OnAxis_X;
-            @Axis_X.performed += instance.OnAxis_X;
-            @Axis_X.canceled += instance.OnAxis_X;
+            Axis.started += instance.Axis_;
+            Axis.performed += instance.Axis_;
+            Axis.canceled += instance.Axis_;
             @Axis_Y.started += instance.OnAxis_Y;
             @Axis_Y.performed += instance.OnAxis_Y;
             @Axis_Y.canceled += instance.OnAxis_Y;
@@ -1111,9 +1111,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
-            @Axis_X.started -= instance.OnAxis_X;
-            @Axis_X.performed -= instance.OnAxis_X;
-            @Axis_X.canceled -= instance.OnAxis_X;
+            Axis.started -= instance.Axis_;
+            Axis.performed -= instance.Axis_;
+            Axis.canceled -= instance.Axis_;
             @Axis_Y.started -= instance.OnAxis_Y;
             @Axis_Y.performed -= instance.OnAxis_Y;
             @Axis_Y.canceled -= instance.OnAxis_Y;
@@ -1306,7 +1306,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         void OnMove(InputAction.CallbackContext context);
-        void OnAxis_X(InputAction.CallbackContext context);
+        void Axis_(InputAction.CallbackContext context);
         void OnAxis_Y(InputAction.CallbackContext context);
         void OnPoint(InputAction.CallbackContext context);
         void OnPress(InputAction.CallbackContext context);

@@ -1,4 +1,4 @@
-using InputSystem;
+using Source.EventServices.GameEvents;
 using UnityEngine;
 
 namespace GamePlay
@@ -9,19 +9,19 @@ namespace GamePlay
         private float _inputForward;
         private float _inputRotation;
         private Rigidbody _rigidBody;
+        private IEventsService _eventsService;
 
         public void Initialize(PlayerStatus status, Rigidbody rigidBody)
         {
+            _eventsService = ServiceLocator.Instance.GetService<IEventsService>();
             _status = status;
             _rigidBody = rigidBody;
-            new InputXEvent().AddListener(HandlerStartInputRotationEvent);
-            new InputYEvent().AddListener(HandlerStartInputForwardEvent);
+            _eventsService.AddListener<InputAxisEvent>(HandlerStartInputRotationEvent, GetHashCode());
         }
 
         public void Dispose()
         {
-            new InputXEvent().RemoveListener(HandlerStartInputRotationEvent);
-            new InputYEvent().RemoveListener(HandlerStartInputForwardEvent);
+            _eventsService.RemoveListener<InputAxisEvent>(GetHashCode());
         }
 
         private void Update()
@@ -48,15 +48,11 @@ namespace GamePlay
             _rigidBody.velocity = speed;
         }
 
-        private void HandlerStartInputForwardEvent(InputYEvent e)
+        private void HandlerStartInputRotationEvent(InputAxisEvent e)
         {
-            _inputForward = e.MoveForward;
-            new RequestMoveAnimationEvent(_inputForward).Invoke();
-        }
-
-        private void HandlerStartInputRotationEvent(InputXEvent e)
-        {
-            _inputRotation = e.MoveRotation;
+            _inputForward = e.MoveAxis.x;
+            _inputRotation = e.MoveAxis.y;
+            _eventsService.Invoke(new RequestMoveAnimationEvent(_inputForward));
         }
     }
 }

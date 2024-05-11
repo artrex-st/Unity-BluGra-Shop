@@ -1,3 +1,4 @@
+using Source.EventServices.GameEvents;
 using InputSystem;
 using UnityEngine;
 
@@ -9,10 +10,11 @@ namespace GamePlay
         [SerializeField] private PlayerStatus _status;
 
         private PlayerMover _playerMover;
-        private PlayerPunch _playerPunch;
+        private PlayerInteraction _playerInteraction;
         private InputManager _inputManager;
         private bool _isGameRunning;
         private Rigidbody RigidBody => GetComponent<Rigidbody>();
+        private IEventsService _eventsService;
 
         private void OnEnable()
         {
@@ -26,20 +28,21 @@ namespace GamePlay
 
         private void Initialize()
         {
-            new ResponseGameStateUpdateEvent().AddListener(HandlerRequestNewGameStateEvent);
+            _eventsService = ServiceLocator.Instance.GetService<IEventsService>();
+            _eventsService.AddListener<ResponseGameStateUpdateEvent>(HandlerRequestNewGameStateEvent, GetHashCode());
 
             _inputManager = gameObject.AddComponent<InputManager>();
 
             _playerMover = gameObject.AddComponent<PlayerMover>();
             _playerMover.Initialize(_status, RigidBody);
 
-            _playerPunch = gameObject.AddComponent<PlayerPunch>();
-            _playerPunch.Initialize(_inputManager);
+            _playerInteraction = gameObject.AddComponent<PlayerInteraction>();
+            _playerInteraction.Initialize(_inputManager);
         }
 
         private void Dispose()
         {
-            new ResponseGameStateUpdateEvent().RemoveListener(HandlerRequestNewGameStateEvent);
+            _eventsService.RemoveListener<ResponseGameStateUpdateEvent>(GetHashCode());
             _playerMover.Dispose();
         }
 
@@ -47,7 +50,7 @@ namespace GamePlay
         {
             _isGameRunning = e.CurrentGameState.Equals(GameStates.GameRunning);
             RigidBody.isKinematic = !_isGameRunning;
-            _playerPunch.enabled = _isGameRunning;
+            _playerInteraction.enabled = _isGameRunning;
             _playerMover.enabled = _isGameRunning;
         }
 

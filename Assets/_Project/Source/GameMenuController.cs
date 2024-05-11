@@ -1,3 +1,4 @@
+using Source.EventServices.GameEvents;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,7 @@ public class GameMenuController : BaseScreen
     [SerializeField] private Button _closeBtn;
     [SerializeField] private ScreenReference _mainMenuRef;
     [SerializeField] private ScreenReference _settingsRef;
+    private IEventsService _eventsService;
 
     private void OnEnable()
     {
@@ -23,6 +25,8 @@ public class GameMenuController : BaseScreen
     private new void Initialize()
     {
         base.Initialize();
+        _eventsService = ServiceLocator.Instance.GetService<IEventsService>();
+
         _settingsBtn.onClick.AddListener(HandlerSettingsClick);
         _mainMenuBtn.onClick.AddListener(HandlerMainMenuClick);
         _closeBtn.onClick.AddListener(HandlerCloseClick);
@@ -31,7 +35,7 @@ public class GameMenuController : BaseScreen
     private void HandlerCloseClick()
     {
         ScreenService.UnLoadAdditiveSceneAsync(_thisScreenRef);
-        new RequestGameStateUpdateEvent(GameStates.GameRunning).Invoke();
+        _eventsService.Invoke(new RequestGameStateUpdateEvent(GameStates.GameRunning));
     }
 
     private void HandlerSettingsClick()

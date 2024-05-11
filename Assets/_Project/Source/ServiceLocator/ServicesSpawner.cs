@@ -37,7 +37,7 @@ public class ServicesSpawner : MonoBehaviour
         DontDestroyOnLoad(eventServiceObject);
 
         EventsService eventsService = eventServiceObject.AddComponent<EventsService>();
-        ServiceLocator.Instance.RegisterService<IEventsService>(eventsService);
+        eventsService.Setup();
     }
 
     private void SpawnSaveDataService()

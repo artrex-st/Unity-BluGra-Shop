@@ -1,3 +1,4 @@
+using Source.EventServices.GameEvents;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,8 @@ namespace Source
         [SerializeField] private Slider _loadBar;
         private float _target;
         private const float LoadBarSpeed = 10f;
+
+        private IEventsService _eventsService;
 
         private void Start()
         {
@@ -31,9 +34,9 @@ namespace Source
         private new void Initialize()
         {
             base.Initialize();
-            //EventsService.Subscribe<ResponseLoadingPercentEvent>(HandlerResponseLoadingPercentEvent);
-            new ResponseLoadingPercentEvent().AddListener(HandlerResponseLoadingPercentEvent);
+            _eventsService = ServiceLocator.Instance.GetService<IEventsService>();
 
+            _eventsService.AddListener<ResponseLoadingPercentEvent>(HandlerResponseLoadingPercentEvent, GetHashCode());
             _loadBar.value = 0;
         }
 
@@ -45,8 +48,7 @@ namespace Source
         private new void Dispose()
         {
             base.Dispose();
-            //EventsService.Unsubscribe<ResponseLoadingPercentEvent>(HandlerResponseLoadingPercentEvent);
-            new ResponseLoadingPercentEvent().RemoveListener(HandlerResponseLoadingPercentEvent);
+            _eventsService.RemoveListener<ResponseLoadingPercentEvent>(GetHashCode());
         }
     }
 }

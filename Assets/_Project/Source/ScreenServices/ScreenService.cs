@@ -1,24 +1,9 @@
+using Source.EventServices.GameEvents;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-public readonly struct ResponseLoadingPercentEvent : IEvent
-{
-    public readonly float Percent;
-    public readonly float FakeLoadingTime;
-
-    public ResponseLoadingPercentEvent(float percent, float fakeLoadingTime = 0)
-    {
-        Percent = percent;
-        FakeLoadingTime = fakeLoadingTime;
-    }
-}
-//EventsService.Subscribe<ResponseLoadingPercentEvent>(callBack);
-//EventsService.Unsubscribe<ResponseLoadingPercentEvent>(callBack);
-//EventsService.Invoke(new ResponseLoadingPercentEvent(5));
-
 
 public class ScreenService : MonoBehaviour, IScreenService
 {
@@ -30,8 +15,9 @@ public class ScreenService : MonoBehaviour, IScreenService
 
     public void Initialize(ScreenReference startupScreen, ScreenReference loadingScreen, float fakeLoadingTime)
     {
-        _loadingScreen = loadingScreen;
         _eventsService = ServiceLocator.Instance.GetService<IEventsService>();
+
+        _loadingScreen = loadingScreen;
         _loadedScenes.Push(startupScreen);
         _fakeLoadTime = fakeLoadingTime;
     }
@@ -92,13 +78,13 @@ public class ScreenService : MonoBehaviour, IScreenService
             }
 
             totalSceneProgress = Mathf.Clamp01((totalSceneProgress / _scenesToLoading.Count) / .9f);
-            new ResponseLoadingPercentEvent(totalSceneProgress).Invoke();
+            _eventsService.Invoke(new ResponseLoadingPercentEvent(totalSceneProgress));
             await UniTask.Yield();
             timeInLoading += Time.deltaTime;
         }
         while (totalSceneProgress < .99f );
 
-        new ResponseLoadingPercentEvent(totalSceneProgress).Invoke();
+        _eventsService.Invoke(new ResponseLoadingPercentEvent(totalSceneProgress));
 
         if (timeInLoading < _fakeLoadTime)
         {

@@ -1,8 +1,9 @@
 using System;
 
-public interface IEventsService
+public interface IEventsService : IService
 {
-    void Subscribe<T>(Action<T> callback) where T : IEvent;
-    void Unsubscribe<T>(Action<T> callback) where T : IEvent;
-    void Invoke<T>(T eventData) where T : IEvent;
+    public void AddListener<T>(Action<T> action, int listenerHashCode) where T : GameEvent { }
+    public void RemoveListener<T>(int listenerHashCode) where T : GameEvent { }
+    public void Invoke(GameEvent gameEvent) { }
+
 }

@@ -1,50 +1,13 @@
+using Source.EventServices.GameEvents;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace InputSystem {
-    public readonly struct InputXEvent : IEvent
-    {
-        public readonly float MoveRotation;
-        public readonly double Duration;
-        public readonly InputActionPhase CurrentPhase;
-
-        public InputXEvent(float moveRotation, double duration, InputActionPhase currentPhase)
-        {
-            MoveRotation = moveRotation;
-            Duration = duration;
-            CurrentPhase = currentPhase;
-        }
-    }
-
-    public readonly struct InputYEvent : IEvent
-    {
-        public readonly float MoveForward;
-        public readonly double Duration;
-        public readonly InputActionPhase CurrentPhase;
-
-        public InputYEvent(float moveForward, double duration, InputActionPhase currentPhase)
-        {
-            MoveForward = moveForward;
-            Duration = duration;
-            CurrentPhase = currentPhase;
-        }
-    }
-
-    public readonly struct RequestInputPressEvent : IEvent
-    {
-        public readonly double Duration;
-        public readonly InputActionPhase CurrentPhase;
-
-        public RequestInputPressEvent(double duration, InputActionPhase currentPhase)
-        {
-            Duration = duration;
-            CurrentPhase = currentPhase;
-        }
-    }
-
+namespace InputSystem
+{
     public class InputManager : MonoBehaviour
     {
         private InputActions _inputsActions;
+        private IEventsService _eventsService;
 
         private void OnEnable()
         {
@@ -58,35 +21,27 @@ namespace InputSystem {
 
         private void Initialize()
         {
+            _eventsService = ServiceLocator.Instance.GetService<IEventsService>();
             _inputsActions = new InputActions();
             _inputsActions.Player.Enable();
 
-            _inputsActions.Player.Axis_X.started += MoveX;
-            _inputsActions.Player.Axis_X.performed += MoveX;
-            _inputsActions.Player.Axis_X.canceled += MoveX;
-
-            _inputsActions.Player.Axis_Y.started += RotateY;
-            _inputsActions.Player.Axis_Y.performed += RotateY;
-            _inputsActions.Player.Axis_Y.canceled += RotateY;
+            _inputsActions.Player.Axis.started += MoveAxis;
+            _inputsActions.Player.Axis.performed += MoveAxis;
+            _inputsActions.Player.Axis.canceled += MoveAxis;
 
             _inputsActions.Player.Press.started += PressStarted;
             _inputsActions.Player.Press.performed += PressStarted;
             _inputsActions.Player.Press.canceled += PressStarted;
         }
 
-        private void MoveX(InputAction.CallbackContext context)
+        private void MoveAxis(InputAction.CallbackContext context)
         {
-            new InputXEvent(context.ReadValue<float>(), context.duration, context.phase).Invoke();
-        }
-
-        private void RotateY(InputAction.CallbackContext context)
-        {
-            new InputYEvent(context.ReadValue<float>(), context.duration, context.phase).Invoke();
+            _eventsService.Invoke(new InputAxisEvent(context.ReadValue<Vector2>(), context.duration, context.phase));
         }
 
         private void PressStarted(InputAction.CallbackContext context)
         {
-            new RequestInputPressEvent(context.duration, context.phase).Invoke();
+            _eventsService.Invoke(new RequestInputPressEvent(context.duration, context.phase));
         }
 
         private static Vector3 ScreenToWorld(Camera camera, Vector3 position)
@@ -97,8 +52,8 @@ namespace InputSystem {
 
         private void Dispose()
         {
-            _inputsActions.Player.Axis_X.Dispose();
-            _inputsActions.Player.Axis_Y.Dispose();
+            _inputsActions.Player.Axis.Dispose();
+            _inputsActions.Player.Press.Dispose();
         }
     }
 }

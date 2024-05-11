@@ -1,1 +1,1 @@
-public interface IEvent { }
+public interface IService { }

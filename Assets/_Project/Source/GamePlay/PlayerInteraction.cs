@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GamePlay
 {
-    public class PlayerPunch : MonoBehaviour
+    public class PlayerInteraction : MonoBehaviour
     {
         private InputManager _playerInput;
         public void Initialize(InputManager playerInput)
