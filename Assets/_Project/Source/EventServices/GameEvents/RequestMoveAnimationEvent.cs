@@ -1,10 +1,12 @@
+using UnityEngine;
+
 namespace Source.EventServices.GameEvents
 {
     public class RequestMoveAnimationEvent : GameEvent
     {
-        public readonly float Speed;
+        public readonly Vector2 Speed;
 
-        public RequestMoveAnimationEvent(float speed)
+        public RequestMoveAnimationEvent(Vector2 speed)
         {
             Speed = speed;
         }

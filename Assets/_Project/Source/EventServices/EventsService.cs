@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 [Serializable]
 internal struct GameEventListened
@@ -64,9 +62,9 @@ public class EventsService : BaseService, IEventsService
         {
             foreach (GameEventListened action in _eventListeners[hashCode])
             {
-                Debug.Log("Invoked one");
                 action.GameEvent?.Invoke(eventData);
             }
+
             return;
         }
     }
