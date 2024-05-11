@@ -133,31 +133,31 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2739514366931639643, guid: 3aa46ff0a24c48649b341250bd6cc0f9, type: 3}
       propertyPath: m_Pivot.x
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2739514366931639643, guid: 3aa46ff0a24c48649b341250bd6cc0f9, type: 3}
       propertyPath: m_Pivot.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2739514366931639643, guid: 3aa46ff0a24c48649b341250bd6cc0f9, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.5
+      value: 0.95
       objectReference: {fileID: 0}
     - target: {fileID: 2739514366931639643, guid: 3aa46ff0a24c48649b341250bd6cc0f9, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 0.95
       objectReference: {fileID: 0}
     - target: {fileID: 2739514366931639643, guid: 3aa46ff0a24c48649b341250bd6cc0f9, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 0.95
       objectReference: {fileID: 0}
     - target: {fileID: 2739514366931639643, guid: 3aa46ff0a24c48649b341250bd6cc0f9, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 0.95
       objectReference: {fileID: 0}
     - target: {fileID: 2739514366931639643, guid: 3aa46ff0a24c48649b341250bd6cc0f9, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 480
+      value: 481
       objectReference: {fileID: 0}
     - target: {fileID: 2739514366931639643, guid: 3aa46ff0a24c48649b341250bd6cc0f9, type: 3}
       propertyPath: m_SizeDelta.y
@@ -213,7 +213,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6610262533501722441, guid: 3aa46ff0a24c48649b341250bd6cc0f9, type: 3}
       propertyPath: m_Name
-      value: Base_Button
+      value: GameMenu_Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 6686724662015092135, guid: 3aa46ff0a24c48649b341250bd6cc0f9, type: 3}
+      propertyPath: m_text
+      value: Menu
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -338,7 +342,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1034869102669919737, guid: 2ccd3afe33a1d3c4faf46cbfdf572c6d, type: 3}
       propertyPath: m_Name
-      value: Base_Canvas
+      value: Game_Canvas
       objectReference: {fileID: 0}
     - target: {fileID: 1737020294796038047, guid: 2ccd3afe33a1d3c4faf46cbfdf572c6d, type: 3}
       propertyPath: m_Pivot.x
@@ -420,6 +424,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6368552681068085707, guid: 2ccd3afe33a1d3c4faf46cbfdf572c6d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -470,6 +478,10 @@ PrefabInstance:
     - target: {fileID: 2675328080322879819, guid: 77c2a2f4fce91c84d8cfc9569a3eef51, type: 3}
       propertyPath: m_Name
       value: Title_Frame
+      objectReference: {fileID: 0}
+    - target: {fileID: 2675328080322879819, guid: 77c2a2f4fce91c84d8cfc9569a3eef51, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4099469526285676869, guid: 77c2a2f4fce91c84d8cfc9569a3eef51, type: 3}
       propertyPath: m_Pivot.x

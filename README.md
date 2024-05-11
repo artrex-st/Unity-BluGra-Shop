@@ -1,4 +1,6 @@
 # BluGra-Shop roadmap.
+Create a functional clothes shop within a simulation game reminiscent of 'The Sims' and 'Stardew Valley,' featuring a top-down view similar to Stardew Valley. The player character should be capable of walking and interacting with the game world
+
 ## Features:
 ### Core features
 - [ ] 1. Shopkeeper interaction
