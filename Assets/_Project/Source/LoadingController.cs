@@ -23,7 +23,7 @@ namespace Source
         private void Update()
         {
             _loadBar.value = Mathf.Lerp(_loadBar.value, _target, LoadBarSpeed * Time.deltaTime);
-            _textLoadingPercent.text = $"Loading {(_loadBar.value * 100):N0}%";
+            _textLoadingPercent.text = $"<color=#00FFFF>Loading...</color> {(_loadBar.value * 100):N0}%";
         }
 
         private void OnDestroy()

@@ -6,12 +6,11 @@ namespace GamePlay
     public class PlayerMover : MonoBehaviour
     {
         private PlayerStatus _status;
-        private float _inputForward;
-        private float _inputRotation;
-        private Rigidbody _rigidBody;
+        private Vector2 _inputDirection;
+        private Rigidbody2D _rigidBody;
         private IEventsService _eventsService;
 
-        public void Initialize(PlayerStatus status, Rigidbody rigidBody)
+        public void Initialize(PlayerStatus status, Rigidbody2D rigidBody)
         {
             _eventsService = ServiceLocator.Instance.GetService<IEventsService>();
             _status = status;
@@ -24,35 +23,20 @@ namespace GamePlay
             _eventsService.RemoveListener<InputAxisEvent>(GetHashCode());
         }
 
-        private void Update()
-        {
-            ApplyRotation();
-        }
-
         private void FixedUpdate()
         {
-            ApplySpeed();
+            ApplyMove();
         }
 
-        private void ApplyRotation()
+        private void ApplyMove()
         {
-            float rotationAmount = _inputRotation * _status.RotationSpeed * Time.deltaTime;
-            Quaternion inputRotation = Quaternion.Euler(0f, rotationAmount, 0f);
-            transform.rotation *= inputRotation;
-        }
-
-        private void ApplySpeed()
-        {
-            Vector3 speed = transform.forward * (_inputForward * _status.MoveSpeed);
-            speed.y = _rigidBody.velocity.y;
-            _rigidBody.velocity = speed;
+            _rigidBody.velocity = _inputDirection * _status.MoveSpeed;
         }
 
         private void HandlerStartInputRotationEvent(InputAxisEvent e)
         {
-            _inputForward = e.MoveAxis.x;
-            _inputRotation = e.MoveAxis.y;
-            _eventsService.Invoke(new RequestMoveAnimationEvent(_inputForward));
+            _inputDirection = e.MoveAxis;
+            _eventsService.Invoke(new RequestMoveAnimationEvent(e.MoveAxis));
         }
     }
 }

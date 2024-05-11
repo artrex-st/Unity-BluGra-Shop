@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GamePlay
 {
-    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(Rigidbody2D))]
     public class PlayerController : MonoBehaviour
     {
         [SerializeField] private PlayerStatus _status;
@@ -13,7 +13,7 @@ namespace GamePlay
         private PlayerInteraction _playerInteraction;
         private InputManager _inputManager;
         private bool _isGameRunning;
-        private Rigidbody RigidBody => GetComponent<Rigidbody>();
+        private Rigidbody2D RigidBody => GetComponent<Rigidbody2D>();
         private IEventsService _eventsService;
 
         private void OnEnable()

@@ -36,8 +36,9 @@ namespace GamePlay {
 
         private void HandlerRequestMoveAnimationEvent(RequestMoveAnimationEvent e)
         {
-            Animator.SetFloat(Move, e.Speed);
-            Animator.SetBool(IsMoving, e.Speed != 0);
+            //TODO: set Animation blend tree here
+            Animator.SetFloat(Move, e.Speed.x);
+            Animator.SetBool(IsMoving, e.Speed.x != 0);
         }
 
         private void Dispose()

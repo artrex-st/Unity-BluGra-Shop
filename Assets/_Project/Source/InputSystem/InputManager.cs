@@ -25,9 +25,9 @@ namespace InputSystem
             _inputsActions = new InputActions();
             _inputsActions.Player.Enable();
 
-            _inputsActions.Player.Axis.started += MoveAxis;
-            _inputsActions.Player.Axis.performed += MoveAxis;
-            _inputsActions.Player.Axis.canceled += MoveAxis;
+            _inputsActions.Player.Move.started += MoveAxis;
+            _inputsActions.Player.Move.performed += MoveAxis;
+            _inputsActions.Player.Move.canceled += MoveAxis;
 
             _inputsActions.Player.Press.started += PressStarted;
             _inputsActions.Player.Press.performed += PressStarted;
@@ -52,7 +52,7 @@ namespace InputSystem
 
         private void Dispose()
         {
-            _inputsActions.Player.Axis.Dispose();
+            _inputsActions.Player.Move.Dispose();
             _inputsActions.Player.Press.Dispose();
         }
     }
